@@ -20,5 +20,16 @@ pipeline {
                 sh "mvn sonar:sonar -Dsonar.projectKey=devops_git -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_AUTH_TOKEN"
             }
         }
+        stage('Docker Build') {
+            steps {
+                sh 'eval $(minikube docker-env)'
+                sh 'docker build -t spring-k8s-app:1.0 .'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f k8s/'
+            }
+        }
     }
 }

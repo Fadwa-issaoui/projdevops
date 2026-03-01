@@ -22,13 +22,28 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                sh 'eval $(minikube docker-env)'
-                sh 'docker build -t spring-k8s-app:1.0 .'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS',
+                )]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker build -t $DOCKER_USER/spring-k8s-app:2.0 ./timesheet-devops
+                        docker push $DOCKER_USER/spring-k8s-app:2.0
+                    '''
+                }
             }
         }
-        stage('Deploy') {
+        stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/'
+                withCredentials([file(credentialsID: 'kubeconfig', variable: 'KUBECONFIG')]){
+                    sh '''
+                        echo "Using kubeconfig at $KUBECONFIG"
+                        kubectl get nodes
+                        kubectl apply -f k8s/deployment.yaml
+                    '''
+                }
             }
         }
     }

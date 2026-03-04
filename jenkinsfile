@@ -37,7 +37,7 @@ pipeline {
         }
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file(credentialsID: 'kubeconfig', variable: 'KUBECONFIG')]){
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){
                     sh '''
                         echo "Using kubeconfig at $KUBECONFIG"
                         kubectl get nodes

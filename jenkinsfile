@@ -41,7 +41,7 @@ pipeline {
                     sh '''
                         echo "Using kubeconfig at $KUBECONFIG"
                         kubectl get nodes
-                        kubectl apply -f k8s/deployment.yaml
+                        kubectl apply -f k8s/spring-deployment.yaml
                     '''
                 }
             }

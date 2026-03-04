@@ -29,7 +29,7 @@ pipeline {
                 )]) {
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker build -t $DOCKER_USER/spring-k8s-app:2.0 ./timesheet-devops
+                        docker build -t $DOCKER_USER/spring-k8s-app:2.0 .
                         docker push $DOCKER_USER/spring-k8s-app:2.0
                     '''
                 }
